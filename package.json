@@ -1,5 +1,5 @@
 {
-  "name": "astro-obfuscate-email",
+  "name": "astro-obfuscate",
   "version": "0.0.1",
   "type": "module",
   "exports": {

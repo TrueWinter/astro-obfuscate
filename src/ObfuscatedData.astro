@@ -1,0 +1,97 @@
+---
+import { generateXorKey, obfuscate } from './obfuscate';
+import { Type } from './Type';
+
+interface Props {
+  /** Obfuscated data */
+  data: string,
+  /** Obfuscated text, if different from data */
+  text?: string
+  /** Data type */
+  type: Type
+}
+
+const { data, text, type } = Astro.props;
+
+const xor = generateXorKey();
+const obfuscatedData = obfuscate(data, xor);
+const obfuscatedText = text ? obfuscate(text, xor) : null;
+
+const NO_JS_TEXTS: { [key in Type]: string } = {
+  [Type.EMAIL]: 'email address',
+  [Type.PHONE]: 'phone number',
+  [Type.TEXT]: 'text'
+}
+---
+
+<obfuscated-data
+  data-obfuscated={obfuscatedData}
+  data-text={obfuscatedText}
+  data-xor={xor}
+  data-type={type}
+>[please wait]</obfuscated-data>
+
+<noscript>
+  <span>[enable JavaScript to view this ${NO_JS_TEXTS[type]}]</span>
+  <style>
+    obfuscated-data {
+      display: none;
+    }
+  </style>
+</noscript>
+
+<script>
+  import { deobfuscate } from './obfuscate';
+  import { Type } from './Type';
+
+  class ObfuscatedData extends HTMLElement {
+    connectedCallback() {
+      const xor = parseInt(this.dataset.xor as string, 10);
+      const deobfuscatedData = deobfuscate(this.dataset.obfuscated as string, xor);
+      const deobfuscatedText = this.dataset.text ?
+        deobfuscate(this.dataset.text as string, xor) : null;
+      
+      setTimeout(() => {
+        const elem = this.#createElement(deobfuscatedData, deobfuscatedText);
+        this.replaceChildren(elem || this.#createErrorElement());
+      }, 500);
+    }
+
+    #createErrorElement() {
+      const elem = document.createElement('span');
+      elem.innerText = '[an error occurred]';
+      return elem;
+    }
+
+    #ELEMENT_FUNCTIONS: {
+      [key in Type]: (deobfuscated: string, text?: string | null) => HTMLElement
+    } = {
+        [Type.EMAIL]: (deobfuscated, text) => {
+          const elem = document.createElement('a');
+          elem.href = `mailto:${deobfuscated}`;
+          elem.innerText = text || deobfuscated;
+          return elem;
+        },
+
+        [Type.PHONE]: (deobfuscated, text = deobfuscated) => {
+          const elem = document.createElement('a');
+          elem.href = `tel:${deobfuscated}`;
+          elem.innerText = text || deobfuscated;
+          return elem;
+        },
+
+        [Type.TEXT]: (deobfuscated) => {
+          const elem = document.createElement('span');
+          elem.innerText = deobfuscated;
+          return elem;
+        }
+      }
+
+    #createElement(deobfuscated: string, text?: string | null) {
+      if (!this.dataset.type) return;
+      return this.#ELEMENT_FUNCTIONS[parseInt(this.dataset.type, 10) as Type]?.(deobfuscated, text);
+    }
+  }
+
+  customElements.define('obfuscated-data', ObfuscatedData);
+</script>

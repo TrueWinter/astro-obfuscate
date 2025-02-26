@@ -1,35 +1,41 @@
-# Astro Starter Kit: Component Package
+# astro-obfuscate
 
-This is a template for an Astro component library. Use this template for writing components to use in multiple projects or publish to NPM.
+astro-obfuscate is a set of components that prevent spam bots from finding email addresses, phone numbers, or other text that you wish to hide. Both SSG and SSR modes are supported.
 
-```sh
-npm create astro@latest -- --template component
+## Components
+
+There are three components included in this library:
+
+- ObfuscatedEmail: Obfuscates email addresses, creating a `mailto` link upon deobfuscation
+- ObfuscatedPhone: Obfuscates phone numbers, creating a `tel` link upon deobfuscation
+- ObfuscatedText: Obfuscates text, creating a `span` element upon deobfuscation
+
+## Usage
+
+```astro
+---
+import { ObfuscatedEmail, ObfuscatedPhone, ObfuscatedText } from 'astro-obfuscate';
+---
+
+<!-- Email -->
+<ObfuscatedEmail email="email@example.com" /> <!-- Result: <a href="mailto:email@example.com">email@example.com</a> -->
+<ObfuscatedEmail email="email@example.com" text="email" /> <!-- Result: <a href="mailto:email@example.com">email</a> -->
+
+<!-- Phone -->
+<ObfuscatedPhone phone="+1-541-555-0123" /> <!-- Result: <a href="tel:+1-541-555-0123">+1-541-555-0123</a> -->
+<ObfuscatedPhone phone="+1-541-555-0123" text="+1 (541) 555-0123" /> <!-- Result: <a href="tel:+1-541-555-0123">+1 (541) 555-0123</a> -->
+
+<!-- Text -->
+<ObfuscatedText text="Sensitive information" /> <!-- Result: <span>Sensitive information</span> -->
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/non-html-pages)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/non-html-pages)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/component/devcontainer.json)
+The (de)obfuscation methods are also exported as `obfuscate` to allow for custom elements to be created.
 
-## 🚀 Project Structure
+## How does it work?
 
-Inside of your Astro project, you'll see the following folders and files:
+The script will wait 500ms returning the result of deobfuscation in a custom element (`obfuscated-data`). During this time, `[please wait]` will be displayed in its place. If JavaScript is disabled, or deobfuscation fails, an error message is shown in its place.
 
-```text
-/
-├── index.ts
-├── src
-│   └── MyComponent.astro
-├── tsconfig.json
-├── package.json
-```
+See the `obfuscate.ts` file for the obfuscation implementation.
 
-The `index.ts` file is the "entry point" for your package. Export your components in `index.ts` to make them importable from your package.
+This method of obfuscation should work against most bots. More sophisticated bots may bypass any client-side obfuscation methods.
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command       | Action                                                                                                                                                                                                                           |
-| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm link`    | Registers this package locally. Run `npm link my-component-library` in an Astro project to install your components                                                                                                               |
-| `npm publish` | [Publishes](https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages#publishing-unscoped-public-packages) this package to NPM. Requires you to be [logged in](https://docs.npmjs.com/cli/v8/commands/npm-adduser) |

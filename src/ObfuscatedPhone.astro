@@ -1,0 +1,13 @@
+---
+import ObfuscatedData from './ObfuscatedData.astro';
+import { Type } from './Type';
+
+interface Props {
+  phone: string
+  text?: string
+}
+
+const { phone, text } = Astro.props;
+---
+
+<ObfuscatedData data={phone} text={text} type={Type.PHONE} />
