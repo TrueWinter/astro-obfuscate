@@ -8,7 +8,7 @@ interface Props {
   /** Obfuscated text, if different from data */
   text?: string
   /** Data type */
-  type: Type
+  type: Type | string
 }
 
 const { data, text, type } = Astro.props;
@@ -17,10 +17,13 @@ const xor = generateXorKey();
 const obfuscatedData = obfuscate(data, xor);
 const obfuscatedText = text ? obfuscate(text, xor) : null;
 
-const NO_JS_TEXTS: { [key in Type]: string } = {
-  [Type.EMAIL]: 'email address',
-  [Type.PHONE]: 'phone number',
-  [Type.TEXT]: 'text'
+function getNoJsText() {
+  switch (type) {
+    case Type.EMAIL: return 'email address';
+    case Type.PHONE: return 'phone number';
+    case Type.TEXT: return 'text';
+    default: return 'data';
+  }
 }
 ---
 
@@ -32,7 +35,7 @@ const NO_JS_TEXTS: { [key in Type]: string } = {
 >[please wait]</obfuscated-data>
 
 <noscript>
-  <span>[enable JavaScript to view this {NO_JS_TEXTS[type]}]</span>
+  <span>[enable JavaScript to view this {getNoJsText()}]</span>
   <style>
     obfuscated-data {
       display: none;
