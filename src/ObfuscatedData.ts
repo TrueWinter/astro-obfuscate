@@ -31,7 +31,7 @@ export default class ObfuscatedData extends HTMLElement {
     return elem;
   }
 
-  #ELEMENT_FUNCTIONS:
+  static #ELEMENT_FUNCTIONS:
     Record<string, (deobfuscated: string, text?: string | null) => HTMLElement> = {
       [Type.EMAIL.toString()]: (deobfuscated, text) => {
         const elem = document.createElement('a');
@@ -54,8 +54,16 @@ export default class ObfuscatedData extends HTMLElement {
       }
     }
 
+  static registerElement(id: string, fn: ElementFunction) {
+    if (id in ObfuscatedData.#ELEMENT_FUNCTIONS) {
+      throw new Error('An element function with that ID already exists');
+    }
+
+    ObfuscatedData.#ELEMENT_FUNCTIONS[id] = fn;
+  }
+
   #createElement(deobfuscated: string, text?: string | null) {
     if (!this.dataset.type) return;
-    return this.#ELEMENT_FUNCTIONS[this.dataset.type]?.(deobfuscated, text);
+    return ObfuscatedData.#ELEMENT_FUNCTIONS[this.dataset.type]?.(deobfuscated, text);
   }
 }
