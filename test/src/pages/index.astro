@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ObfuscatedEmail, ObfuscatedPhone, ObfuscatedText } from '../../../index';
+---
+<Layout>
+  <main>
+    <!-- Email -->
+    <ObfuscatedEmail email="email@example.com" /> <!-- Result: <a href="mailto:email@example.com">email@example.com</a> -->
+    <ObfuscatedEmail email="email@example.com" text="email" /> <!-- Result: <a href="mailto:email@example.com">email</a> -->
+
+    <!-- Phone -->
+    <ObfuscatedPhone phone="+1-541-555-0123" /> <!-- Result: <a href="tel:+1-541-555-0123">+1-541-555-0123</a> -->
+    <ObfuscatedPhone phone="+1-541-555-0123" text="+1 (541) 555-0123" /> <!-- Result: <a href="tel:+1-541-555-0123">+1 (541) 555-0123</a> -->
+
+    <!-- Text -->
+    <ObfuscatedText text="Sensitive information" /> <!-- Result: <span>Sensitive information</span> -->
+  </main>
+</Layout>
+
+<style>
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.5rem;
+  }
+</style>
