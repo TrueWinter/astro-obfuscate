@@ -10,17 +10,22 @@ import Layout from '../layouts/Layout.astro';
 <Layout>
   <main>
     <!-- Email -->
-    <ObfuscatedEmail email="email@example.com" /> <!-- Result: <a href="mailto:email@example.com">email@example.com</a> -->
-    <ObfuscatedEmail email="email@example.com" text="email" /> <!-- Result: <a href="mailto:email@example.com">email</a> -->
+    <!-- Result: <a href="mailto:email@example.com">email@example.com</a> -->
+    <ObfuscatedEmail email="email@example.com" />
+    <!-- Result: <a href="mailto:email@example.com">email</a> -->
+    <ObfuscatedEmail email="email@example.com" text="email" />
 
     <!-- Phone -->
-    <ObfuscatedPhone phone="+1-541-555-0123" /> <!-- Result: <a href="tel:+1-541-555-0123">+1-541-555-0123</a> -->
-    <ObfuscatedPhone phone="+1-541-555-0123" text="+1 (541) 555-0123" /> <!-- Result: <a href="tel:+1-541-555-0123">+1 (541) 555-0123</a> -->
+    <!-- Result: <a href="tel:+1-541-555-0123">+1-541-555-0123</a> -->
+    <ObfuscatedPhone phone="+1-541-555-0123" />
+    <!-- Result: <a href="tel:+1-541-555-0123">+1 (541) 555-0123</a> -->
+    <ObfuscatedPhone phone="+1-541-555-0123" text="+1 (541) 555-0123" />
 
     <!-- Text -->
-    <ObfuscatedText text="Sensitive information" /> <!-- Result: <span>Sensitive information</span> -->
+    <!-- Result: <span>Sensitive information</span> -->
+    <ObfuscatedText text="Sensitive information" />
 
-    <!-- Custom obfuscated component -->
+    <!-- Custom obfuscated element -->
     <script>
       import ObfuscatedData from '../../../src/client';
       ObfuscatedData.registerElement('link', (deobfuscated, text) => {
@@ -30,6 +35,7 @@ import Layout from '../layouts/Layout.astro';
         return elem;
       });
     </script>
+    <!-- Result: <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Free stuff</a> -->
     <ObfuscatedData data="https://www.youtube.com/watch?v=dQw4w9WgXcQ" text="Free stuff" type="link" />
   </main>
 </Layout>
