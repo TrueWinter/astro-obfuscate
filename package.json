@@ -3,7 +3,15 @@
   "version": "0.0.2",
   "type": "module",
   "exports": {
-    ".": "./index.ts"
+    "./client": {
+      "import": "./src/client.ts"
+    },
+    "./server": {
+      "import": "./src/server.ts"
+    },
+    "./components": {
+      "import": "./src/components.ts"
+    }
   },
   "files": [
     "src",

@@ -1,6 +1,6 @@
 ---
-import { generateXorKey, obfuscate } from './obfuscate';
-import { Type } from './Type';
+import { generateXorKey, obfuscate } from '../server';
+import { Type } from '../Type';
 
 interface Props {
   /** Obfuscated data */
@@ -44,6 +44,6 @@ function getNoJsText() {
 </noscript>
 
 <script>
-  import ObfuscatedData from './ObfuscatedData';
+  import ObfuscatedData from '../client';
   customElements.define('obfuscated-data', ObfuscatedData);
 </script>

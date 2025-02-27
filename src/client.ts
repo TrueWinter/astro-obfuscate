@@ -1,5 +1,22 @@
 import { Type } from './Type';
-import { deobfuscate } from './obfuscate';
+
+function hexToBytes(hex: string) {
+  let bytes = [];
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes.push(parseInt(hex.substring(i, i + 2), 16));
+  }
+  return bytes;
+}
+
+export function deobfuscate(obfuscated: string, xor: number) {
+  return atob(
+    hexToBytes(obfuscated)
+      .map((e, i) => String.fromCharCode(
+        (e ^ (i % 256)) ^ xor
+      ))
+      .join('')
+  );
+}
 
 export type ElementFunction = (deobfuscated: string, text?: string | null) => HTMLElement;
 
