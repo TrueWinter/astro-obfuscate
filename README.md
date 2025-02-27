@@ -15,7 +15,12 @@ There are four components included in this library:
 
 ```astro
 ---
-import { ObfuscatedEmail, ObfuscatedPhone, ObfuscatedText, ObfuscatedData } from 'astro-obfuscate/components';
+import {
+  ObfuscatedEmail,
+  ObfuscatedPhone,
+  ObfuscatedText,
+  ObfuscatedData
+} from 'astro-obfuscate/components';
 ---
 
 <!-- Email -->
