@@ -1,6 +1,11 @@
 ---
+import {
+  ObfuscatedEmail,
+  ObfuscatedPhone,
+  ObfuscatedText,
+  ObfuscatedData
+} from '../../../src/components';
 import Layout from '../layouts/Layout.astro';
-import { ObfuscatedEmail, ObfuscatedPhone, ObfuscatedText } from '../../../index';
 ---
 <Layout>
   <main>
@@ -14,6 +19,18 @@ import { ObfuscatedEmail, ObfuscatedPhone, ObfuscatedText } from '../../../index
 
     <!-- Text -->
     <ObfuscatedText text="Sensitive information" /> <!-- Result: <span>Sensitive information</span> -->
+
+    <!-- Custom obfuscated component -->
+    <script>
+      import ObfuscatedData from '../../../src/client';
+      ObfuscatedData.registerElement('link', (deobfuscated, text) => {
+        const elem = document.createElement('a');
+        elem.href = deobfuscated;
+        elem.innerText = text || deobfuscated;
+        return elem;
+      });
+    </script>
+    <ObfuscatedData data="https://www.youtube.com/watch?v=dQw4w9WgXcQ" text="Free stuff" type="link" />
   </main>
 </Layout>
 

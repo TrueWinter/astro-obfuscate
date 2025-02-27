@@ -81,6 +81,10 @@ export default class ObfuscatedData extends HTMLElement {
 
   #createElement(deobfuscated: string, text?: string | null) {
     if (!this.dataset.type) return;
+    if (!(this.dataset.type in ObfuscatedData.#ELEMENT_FUNCTIONS)) {
+      console.error(`Custom type ${this.dataset.type} has no element function registered`);
+    }
+
     return ObfuscatedData.#ELEMENT_FUNCTIONS[this.dataset.type]?.(deobfuscated, text);
   }
 }
