@@ -18,7 +18,8 @@
     "index.ts"
   ],
   "keywords": [
-    "astro-component"
+    "astro-component",
+    "utility"
   ],
   "scripts": {},
   "repository": {
