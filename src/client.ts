@@ -19,6 +19,23 @@ export function deobfuscate(obfuscated: string, xor: number) {
 }
 
 export type ElementFunction = (deobfuscated: string, text?: string | null) => HTMLElement;
+export type ElementFunctionRegistry = Record<string, ElementFunction>;
+
+/*
+ * Vite bundles a different version of this file when it is imported from node_modules versus
+ * when the ObfuscatedData component imports it. This happens whether a relative or package
+ * name import is used in the component, and prevents the ObfuscatedData class from
+ * storing custom element functions. To work around this, a global variable is used.
+ */
+declare global {
+  interface Window {
+    astroObfuscateCustomElements: ElementFunctionRegistry
+  }
+}
+if (!('astroObfuscateCustomElements' in window)) {
+  // @ts-expect-error
+  window.astroObfuscateCustomElements = {};
+}
 
 export default class ObfuscatedData extends HTMLElement {
   connectedCallback() {
@@ -48,8 +65,7 @@ export default class ObfuscatedData extends HTMLElement {
     return elem;
   }
 
-  static #ELEMENT_FUNCTIONS:
-    Record<string, (deobfuscated: string, text?: string | null) => HTMLElement> = {
+  static #ELEMENT_FUNCTIONS: ElementFunctionRegistry = {
       [Type.EMAIL.toString()]: (deobfuscated, text) => {
         const elem = document.createElement('a');
         elem.href = `mailto:${deobfuscated}`;
@@ -71,20 +87,28 @@ export default class ObfuscatedData extends HTMLElement {
       }
     }
 
+  static #isRegistered(id: string) {
+    return id in ObfuscatedData.#ELEMENT_FUNCTIONS || id in window.astroObfuscateCustomElements;
+  }
+
   static registerElement(id: string, fn: ElementFunction) {
-    if (id in ObfuscatedData.#ELEMENT_FUNCTIONS) {
+    if (ObfuscatedData.#isRegistered(id)) {
       throw new Error('An element function with that ID already exists');
     }
 
-    ObfuscatedData.#ELEMENT_FUNCTIONS[id] = fn;
+    window.astroObfuscateCustomElements[id] = fn;
   }
+
 
   #createElement(deobfuscated: string, text?: string | null) {
     if (!this.dataset.type) return;
-    if (!(this.dataset.type in ObfuscatedData.#ELEMENT_FUNCTIONS)) {
+    if (!ObfuscatedData.#isRegistered(this.dataset.type)) {
       console.error(`Custom type ${this.dataset.type} has no element function registered`);
     }
 
-    return ObfuscatedData.#ELEMENT_FUNCTIONS[this.dataset.type]?.(deobfuscated, text);
+    return (
+      ObfuscatedData.#ELEMENT_FUNCTIONS[this.dataset.type] ||
+      window.astroObfuscateCustomElements[this.dataset.type]
+    )?.(deobfuscated, text);
   }
 }
