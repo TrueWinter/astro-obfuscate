@@ -11,9 +11,9 @@ import Layout from '../layouts/Layout.astro';
   <main>
     <!-- Email -->
     <!-- Result: <a href="mailto:email@example.com">email@example.com</a> -->
-    <ObfuscatedEmail email="email@example.com" />
+    <ObfuscatedEmail email="email@example.com" class="email-text" />
     <!-- Result: <a href="mailto:email@example.com">email</a> -->
-    <ObfuscatedEmail email="email@example.com" text="email" />
+    <ObfuscatedEmail email="email@example.com" text="email" class={['green-bg', 'red-underline']} />
 
     <!-- Phone -->
     <!-- Result: <a href="tel:+1-541-555-0123">+1-541-555-0123</a> -->
@@ -23,7 +23,7 @@ import Layout from '../layouts/Layout.astro';
 
     <!-- Text -->
     <!-- Result: <span>Sensitive information</span> -->
-    <ObfuscatedText text="Sensitive information" />
+    <ObfuscatedText text="Sensitive information" class="red-underline" />
 
     <!-- Custom obfuscated element -->
     <script>
@@ -36,7 +36,7 @@ import Layout from '../layouts/Layout.astro';
       });
     </script>
     <!-- Result: <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Free stuff</a> -->
-    <ObfuscatedData data="https://www.youtube.com/watch?v=dQw4w9WgXcQ" text="Free stuff" type="link" />
+    <ObfuscatedData data="https://www.youtube.com/watch?v=dQw4w9WgXcQ" text="Free stuff" type="link" class="green-bg" />
   </main>
 </Layout>
 
@@ -46,5 +46,19 @@ import Layout from '../layouts/Layout.astro';
     flex-direction: column;
     gap: 0.5rem;
     margin: 0.5rem;
+  }
+
+  /* Classes are applied to the obfuscated-data element */
+  :global(.red-underline *) {
+    border-bottom: 1px solid red;
+  }
+
+  :global(.green-bg *) {
+    background-color: lime;
+  }
+
+  :global(.email-text a) {
+    font-style: italic;
+    font-family: Helvetica;
   }
 </style>

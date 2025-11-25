@@ -53,6 +53,21 @@ import {
 <ObfuscatedData data="https://www.youtube.com/watch?v=dQw4w9WgXcQ" text="Free stuff" type="link" />
 ```
 
+### Styling
+
+All obfuscated components accept a `class` and `noscriptClass` attribute to allow styling. These classes are added to the `obfuscated-data` and `noscript` elements, respectively.
+
+```astro
+<ObfuscatedEmail email="email@example.com" class="email-text" />
+
+<style>
+  :global(.email-text a) {
+    font-style: italic;
+    font-family: Helvetica;
+  }
+</style>
+```
+
 ## How does it work?
 
 The script will wait 500ms returning the result of deobfuscation in a custom element (`obfuscated-data`). During this time, `[please wait]` will be displayed in its place. If JavaScript is disabled, or deobfuscation fails, an error message is shown in its place.

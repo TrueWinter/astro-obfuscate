@@ -1,8 +1,14 @@
 ---
+import type { AstroBuiltinAttributes } from 'astro';
 import { generateXorKey, obfuscate } from '../server';
 import { Type } from '../Type';
 
-interface Props {
+export interface StyleableComponent {
+  class?: AstroBuiltinAttributes['class:list']
+  noscriptClass?: AstroBuiltinAttributes['class:list']
+}
+
+interface Props extends StyleableComponent {
   /** Obfuscated data */
   data: string,
   /** Obfuscated text, if different from data */
@@ -11,7 +17,7 @@ interface Props {
   type: Type | string
 }
 
-const { data, text, type } = Astro.props;
+const { data, text, type, class: classes, noscriptClass } = Astro.props;
 
 const xor = generateXorKey();
 const obfuscatedData = obfuscate(data, xor);
@@ -32,9 +38,10 @@ function getNoJsText() {
   data-text={obfuscatedText}
   data-xor={xor}
   data-type={type}
+  class:list={classes}
 >[please wait]</obfuscated-data>
 
-<noscript>
+<noscript class:list={noscriptClass}>
   <span>[enable JavaScript to view this {getNoJsText()}]</span>
   <style>
     obfuscated-data {

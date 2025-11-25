@@ -1,12 +1,12 @@
 ---
-import ObfuscatedData from './ObfuscatedData.astro';
+import ObfuscatedData, { type StyleableComponent } from './ObfuscatedData.astro';
 import { Type } from '../Type';
 
-interface Props {
+interface Props extends StyleableComponent {
   text: string
 }
 
-const { text } = Astro.props;
+const { text, ...other } = Astro.props;
 ---
 
-<ObfuscatedData data={text} type={Type.TEXT} />
+<ObfuscatedData data={text} type={Type.TEXT} {...other} />
